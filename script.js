@@ -141,5 +141,3 @@ textArea.addEventListener('focus', () => {
 		errorText.remove();
 	}
 });
-
-// createComment('asdasd', 'asdasd', 'asdasds');
