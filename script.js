@@ -5,17 +5,12 @@ let sendButton = document.querySelector('.send-button');
 let commentArea = document.querySelector('.comment-area');
 let form = document.querySelector('.form');
 
-let commentsData = [];
 let index = 0;
 
 function createComment(name, text, date) {
 	let commentDiv = document.createElement('section');
 	commentDiv.className = 'comments';
 	let currentDate = new Date();
-
-	if (!commentsData.length) {
-		index = 0;
-	}
 
 	if (!date) {
 		let hours = currentDate.getHours();
@@ -42,8 +37,6 @@ function createComment(name, text, date) {
 		</div>
 	`;
 
-	commentsData = [...commentsData, { id: index, name: name, comment: text, isLiked: false }];
-
 	commentArea.append(commentDiv);
 	inputName.value = '';
 	textArea.value = '';
@@ -54,24 +47,15 @@ function createComment(name, text, date) {
 	deleteButton.addEventListener('click', event => {
 		let parent = event.target.closest('section');
 		parent.remove();
-
-		let id = parseInt(event.target.getAttribute('id'));
-		let copyCommentsData = commentsData.filter(item => {
-			return item.id != commentsData[id].id;
-		});
-
-		commentsData = [...copyCommentsData];
 	});
 
 	let likeButton = document.getElementById(`${index}like`);
 
 	likeButton.addEventListener('click', event => {
-		let id = parseInt(event.target.getAttribute('id'));
 		let parent = event.target.closest('div');
 		let likeCount = parent.children[0];
 
-		likeCount.hidden = commentsData[id].isLiked;
-		commentsData[id].isLiked = !commentsData[id].isLiked;
+		likeCount.hidden ? (likeCount.hidden = false) : (likeCount.hidden = true);
 	});
 
 	index++;
