@@ -10,21 +10,8 @@ let index = 0;
 function createComment(name, text, date) {
 	let commentDiv = document.createElement('section');
 	commentDiv.className = 'comments';
-	let currentDate = new Date();
 
-	if (!date) {
-		let hours = currentDate.getHours();
-		if (hours < 10) hours = `0${hours}`;
-
-		let minutes = currentDate.getMinutes();
-		if (minutes < 10) minutes = `0${minutes}`;
-
-		date = `Сегодня, ${hours}:${minutes}`;
-	}
-
-	if (currentDate.getDate() - +date.slice(8) === 1) {
-		date = 'Вчера';
-	}
+	date = getCurrentDate(date);
 
 	commentDiv.innerHTML = `
 		<div class='comment-name'>${name}</div>
@@ -38,9 +25,8 @@ function createComment(name, text, date) {
 	`;
 
 	commentArea.append(commentDiv);
-	inputName.value = '';
-	textArea.value = '';
-	let clearDate = (document.querySelector('input[type=date]').value = '');
+
+	clearInputs();
 
 	let deleteButton = document.getElementById(`${index}delete`);
 
@@ -61,31 +47,48 @@ function createComment(name, text, date) {
 	index++;
 }
 
+function clearInputs() {
+	inputName.value = '';
+	textArea.value = '';
+	let clearDate = (document.querySelector('input[type=date]').value = '');
+}
+
+function getCurrentDate(date) {
+	let currentDate = new Date();
+
+	if (!date || currentDate.getDate() === +date.slice(8)) {
+		let hours = currentDate.getHours();
+		if (hours < 10) hours = `0${hours}`;
+
+		let minutes = currentDate.getMinutes();
+		if (minutes < 10) minutes = `0${minutes}`;
+
+		date = `Сегодня, ${hours}:${minutes}`;
+	} else if (currentDate.getDate() - +date.slice(8) === 1) {
+		date = 'Вчера';
+	}
+
+	return date;
+}
+
 sendButton.addEventListener('click', event => {
 	event.preventDefault();
-	let commentName = inputName.value;
-	let commentText = textArea.value;
-	let commentDate = date.value;
 
-	if (!commentName || !commentText) {
+	if (!inputName.value || !textArea.value) {
 		return false;
 	}
 
-	createComment(commentName, commentText, commentDate);
+	createComment(inputName.value, textArea.value, date.value);
 });
 
 textArea.addEventListener('keydown', event => {
-	let commentName = inputName.value;
-	let commentText = textArea.value;
-	let commentDate = date.value;
-
-	if (!commentName || !commentText) {
+	if (!inputName.value || !textArea.value) {
 		return false;
 	}
 
 	if (event.key === 'Enter') {
 		event.preventDefault();
-		createComment(commentName, commentText, commentDate);
+		createComment(inputName.value, textArea.value, date.value);
 	}
 });
 
