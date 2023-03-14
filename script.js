@@ -37,46 +37,44 @@ function createComment(name, text, date) {
 		<div class='comment-date'>${date}</div>
 		<div class='buttons'>
 			<span class='like-count' hidden>1</span>
-			<img src='./assets/icons8-favorite-24.png' width='24px' height='24px' class='like' id='${index}'/>
-			<img src="./assets/icons8-trash-32.png" width='24px' height='24px' class='delete' id='${index}'/>
+			<img src='./assets/icons8-favorite-24.png' width='24px' height='24px' class='like' id='${index}like'/>
+			<img src="./assets/icons8-trash-32.png" width='24px' height='24px' class='delete' id='${index}delete'/>
 		</div>
 	`;
 
-	commentsData = [...commentsData, { id: index++, name: name, comment: text, isLiked: false }];
+	commentsData = [...commentsData, { id: index, name: name, comment: text, isLiked: false }];
 
 	commentArea.append(commentDiv);
 	inputName.value = '';
 	textArea.value = '';
 	let clearDate = (document.querySelector('input[type=date]').value = '');
 
-	let deleteButtons = document.querySelectorAll('.delete');
+	let deleteButton = document.getElementById(`${index}delete`);
 
-	deleteButtons.forEach(deleteButton => {
-		deleteButton.addEventListener('click', event => {
-			let parent = event.target.closest('section');
-			parent.remove();
+	deleteButton.addEventListener('click', event => {
+		let parent = event.target.closest('section');
+		parent.remove();
 
-			let id = event.target.getAttribute('id');
-			let copyCommentsData = commentsData.filter(item => {
-				return item.id != commentsData[id].id;
-			});
-
-			commentsData = [...copyCommentsData];
+		let id = parseInt(event.target.getAttribute('id'));
+		let copyCommentsData = commentsData.filter(item => {
+			return item.id != commentsData[id].id;
 		});
+
+		commentsData = [...copyCommentsData];
 	});
 
-	let likeButtons = document.querySelectorAll('.like');
+	let likeButton = document.getElementById(`${index}like`);
 
-	likeButtons.forEach(likeButton => {
-		likeButton.addEventListener('click', event => {
-			let id = event.target.getAttribute('id');
-			let parent = event.target.closest('div');
-			let likeCount = parent.children[0];
+	likeButton.addEventListener('click', event => {
+		let id = parseInt(event.target.getAttribute('id'));
+		let parent = event.target.closest('div');
+		let likeCount = parent.children[0];
 
-			likeCount.hidden = commentsData[id].isLiked;
-			commentsData[id].isLiked = !commentsData[id].isLiked;
-		});
+		likeCount.hidden = commentsData[id].isLiked;
+		commentsData[id].isLiked = !commentsData[id].isLiked;
 	});
+
+	index++;
 }
 
 sendButton.addEventListener('click', event => {
